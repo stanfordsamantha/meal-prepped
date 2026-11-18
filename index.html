@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fdf1e3">
+  <meta name="description" content="Save recipes, build a combined shopping list, and time your meal prep step by step.">
+  <title>Meal Prep Helper</title>
+  <!-- Lets phones install the app on the home screen and open it in its own window -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Meal Prep">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- Fonts from Google Fonts (free, no key). If they can't load, the app falls back to built-in fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,800..900,100&family=Patrick+Hand&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Meal Prep Helper</h1>
+  </header>
+
+  <main>
+    <!-- ============ TAB 1: RECIPES ============ -->
+    <section id="tab-recipes" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-recipes">
+      <div class="toolbar">
+        <button type="button" id="new-recipe-btn" class="btn primary">+ New recipe</button>
+      </div>
+
+      <form id="recipe-form" class="card stamp-purple" hidden novalidate>
+        <h2 id="form-title">New recipe</h2>
+
+        <label for="f-name">Recipe name</label>
+        <input id="f-name" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Chicken rice bowls">
+
+        <label for="f-servings">Servings</label>
+        <input id="f-servings" type="number" min="1" max="99" value="4" inputmode="numeric">
+
+        <label for="f-ingredients">Ingredients</label>
+        <p class="hint">One per line, amount first. Example: <code>2 cups rice</code></p>
+        <textarea id="f-ingredients" rows="6" placeholder="2 cups rice&#10;1 lb chicken breast&#10;3 cloves garlic&#10;salt"></textarea>
+
+        <label for="f-steps">Prep steps</label>
+        <p class="hint">One per line. End with the time to get a timer. Example: <code>Chop vegetables - 10 min</code></p>
+        <textarea id="f-steps" rows="6" placeholder="Rinse rice - 2 min&#10;Cook rice - 18 min&#10;Portion into containers"></textarea>
+
+        <p id="form-error" class="error" role="alert"></p>
+
+        <div class="row">
+          <button type="submit" class="btn primary">Save recipe</button>
+          <button type="button" id="cancel-btn" class="btn">Cancel</button>
+        </div>
+      </form>
+
+      <div id="recipe-list"></div>
+
+      <div class="card stamp-pink">
+        <h2>Backup</h2>
+        <p class="muted">Your recipes are saved only in this browser. Export a file to back them up or move them to another device, then import it there.</p>
+        <div class="row">
+          <button type="button" id="export-btn" class="btn">Export recipes</button>
+          <button type="button" id="import-btn" class="btn">Import recipes</button>
+          <input type="file" id="import-input" accept=".json,application/json" hidden>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 2: SHOPPING LIST ============ -->
+    <section id="tab-shop" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-shop" hidden>
+      <div class="card stamp-purple">
+        <h2>Which recipes are you prepping?</h2>
+        <div id="shop-recipes"></div>
+      </div>
+
+      <div class="card stamp-orange">
+        <div class="card-head">
+          <h2>Shopping list</h2>
+          <button type="button" id="clear-checks-btn" class="btn small">Uncheck all</button>
+        </div>
+        <ul id="shop-list" class="checklist"></ul>
+      </div>
+    </section>
+
+    <!-- ============ TAB 3: PREP TIMER ============ -->
+    <section id="tab-timer" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-timer" hidden>
+      <div class="card stamp-pink">
+        <label for="timer-recipe">Recipe to prep</label>
+        <select id="timer-recipe"></select>
+      </div>
+
+      <div id="timer-panel" class="card stamp-purple timer" hidden>
+        <p id="timer-progress" class="muted"></p>
+        <h2 id="timer-step"></h2>
+        <div id="timer-clock" class="clock">00:00</div>
+        <p id="timer-note" class="muted"></p>
+        <div class="row center">
+          <button type="button" id="timer-start" class="btn primary big">Start</button>
+          <button type="button" id="timer-skip" class="btn big">Skip</button>
+        </div>
+        <p id="timer-total" class="total"></p>
+        <p id="timer-next" class="muted"></p>
+        <button type="button" id="timer-reset" class="btn small">Start over</button>
+      </div>
+
+      <p id="timer-empty" class="empty"></p>
+    </section>
+  </main>
+
+  <nav class="tab-bar" role="tablist" aria-label="Sections">
+    <button type="button" class="tab-btn" id="tabbtn-recipes" data-tab="recipes" role="tab" aria-selected="true">
+      <span class="tab-icon" aria-hidden="true">📖</span>Recipes
+    </button>
+    <button type="button" class="tab-btn" id="tabbtn-shop" data-tab="shop" role="tab" aria-selected="false">
+      <span class="tab-icon" aria-hidden="true">🛒</span>Shopping
+    </button>
+    <button type="button" class="tab-btn" id="tabbtn-timer" data-tab="timer" role="tab" aria-selected="false">
+      <span class="tab-icon" aria-hidden="true">⏱️</span>Timer
+    </button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
