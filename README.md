@@ -68,7 +68,7 @@ The **Meal Prep** icon appears on your home screen. It opens full-screen, withou
 
 Open `index.html` in a web browser (double-click it). On a computer, use your browser's phone view to check the phone layout (in Chrome: right-click → Inspect → the phone icon).
 
-- [ ] **Empty start:** The Recipes tab says "No recipes yet" and offers **Add a recipe**, which adds a ready-made example recipe.
+- [ ] **Empty start:** The Recipes tab says "No recipes yet" and offers **Add an example recipe**, which adds a ready-made Chicken & Rice Bowls recipe.
 - [ ] **Add your own recipe:** Tap **+ New recipe**, fill it in, and save. It appears in the list. Tap it to see the ingredients and steps.
 - [ ] **Form checks:** Saving with no name, or with no ingredients, shows a red message.
 - [ ] **Edit / Delete:** Edit a recipe and confirm the change shows. Delete it and confirm it asks first.
