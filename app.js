@@ -10,13 +10,113 @@
 
 const STORAGE_KEY = 'mealPrepHelper.v1';
 
+/* ---------- Store sections ----------
+   Used to sort the shopping list the way you'd walk through a grocery store.
+   Each section has a list of words (written in the singular; plurals like
+   "carrots", "berries" and "tomatoes" are matched automatically).
+   To teach the app a new ingredient, add it to the right list. */
+const SECTIONS = [
+  { id: 'produce', name: 'Produce', icon: '🥦', words: [
+    'apple', 'apricot', 'arugula', 'asparagus', 'avocado', 'banana', 'basil', 'bean sprout', 'beet',
+    'bell pepper', 'berry', 'blackberry', 'blueberry', 'bok choy', 'broccoli', 'brussels sprout',
+    'cabbage', 'cantaloupe', 'carrot', 'cauliflower', 'celery', 'chard', 'cherry', 'cherry tomato',
+    'chive', 'cilantro', 'coleslaw mix', 'collard green', 'corn', 'corn on the cob', 'cucumber', 'dill',
+    'eggplant', 'fennel', 'fresh herb', 'fruit', 'garlic', 'ginger', 'grape', 'grapefruit', 'green bean',
+    'green onion', 'green pepper', 'herb', 'jalapeno', 'kale', 'kiwi', 'leek', 'lemon', 'lemon juice',
+    'lettuce', 'lime', 'lime juice', 'mango', 'melon', 'mint', 'mixed green', 'mushroom', 'nectarine',
+    'onion', 'orange', 'parsley', 'parsnip', 'peach', 'pear', 'pineapple', 'plum', 'potato', 'pumpkin',
+    'radish', 'raspberry', 'red onion', 'red pepper', 'romaine', 'salad', 'salad mix', 'scallion',
+    'shallot', 'snap pea', 'snow pea', 'spinach', 'sprout', 'squash', 'strawberry', 'sweet potato',
+    'tofu', 'tomato', 'turnip', 'vegetable', 'veggie', 'watermelon', 'yam', 'yellow pepper', 'zucchini',
+  ] },
+  { id: 'bakery', name: 'Bakery & Bread', icon: '🍞', words: [
+    'bagel', 'baguette', 'bread', 'bun', 'ciabatta', 'croissant', 'english muffin', 'flatbread',
+    'hamburger bun', 'hot dog bun', 'loaf', 'muffin', 'naan', 'pita', 'roll', 'sourdough', 'tortilla', 'wrap',
+  ] },
+  { id: 'meat', name: 'Meat & Seafood', icon: '🥩', words: [
+    'bacon', 'beef', 'brisket', 'chicken', 'chicken breast', 'chicken thigh', 'chicken wing', 'chorizo',
+    'cod', 'crab', 'deli meat', 'duck', 'fish', 'ground beef', 'ground pork', 'ground turkey', 'halibut',
+    'ham', 'hot dog', 'lamb', 'lobster', 'meat', 'meatball', 'pepperoni', 'pork', 'pork chop', 'prawn',
+    'prosciutto', 'rib', 'rotisserie chicken', 'salami', 'salmon', 'sausage', 'scallop', 'shrimp',
+    'sirloin', 'steak', 'tenderloin', 'tilapia', 'trout', 'tuna steak', 'turkey', 'veal',
+  ] },
+  { id: 'dairy', name: 'Dairy & Eggs', icon: '🧀', words: [
+    'almond milk', 'brie', 'butter', 'buttermilk', 'cheddar', 'cheese', 'cottage cheese', 'cream',
+    'cream cheese', 'creamer', 'egg', 'egg white', 'feta', 'ghee', 'goat cheese', 'gouda',
+    'greek yogurt', 'half and half', 'heavy cream', 'kefir', 'margarine', 'milk', 'monterey jack',
+    'mozzarella', 'oat milk', 'parmesan', 'provolone', 'ricotta', 'sour cream', 'soy milk', 'swiss',
+    'whipped cream', 'yogurt',
+  ] },
+  { id: 'frozen', name: 'Frozen', icon: '🧊', words: [
+    'edamame', 'frozen', 'hash brown', 'ice', 'ice cream', 'pea', 'popsicle', 'tater tot',
+  ] },
+  { id: 'canned', name: 'Canned & Jarred', icon: '🥫', words: [
+    'anchovy', 'applesauce', 'artichoke heart', 'bean', 'black bean', 'bouillon', 'broth', 'canned',
+    'cannellini', 'chickpea', 'coconut milk', 'condensed milk', 'crushed tomato', 'diced tomato',
+    'enchilada sauce', 'evaporated milk', 'garbanzo', 'green chile', 'jarred', 'kidney bean', 'marinara',
+    'olive', 'pasta sauce', 'pickle', 'pinto bean', 'pumpkin puree', 'refried bean', 'roasted red pepper',
+    'salsa', 'sardine', 'soup', 'stock', 'tinned', 'tomato paste', 'tomato sauce', 'tuna',
+  ] },
+  { id: 'grains', name: 'Grains & Pasta', icon: '🍝', words: [
+    'barley', 'breadcrumb', 'brown rice', 'cereal', 'couscous', 'dried bean', 'egg noodle', 'farro',
+    'fettuccine', 'granola', 'grits', 'lasagna', 'lentil', 'linguine', 'macaroni', 'noodle', 'oat',
+    'oatmeal', 'orzo', 'panko', 'pasta', 'penne', 'polenta', 'quinoa', 'ramen', 'rice', 'rice noodle',
+    'rolled oat', 'spaghetti',
+  ] },
+  { id: 'baking', name: 'Baking & Spices', icon: '🧂', words: [
+    'allspice', 'baking powder', 'baking soda', 'bay leaf', 'bay leaves', 'black pepper', 'brown sugar',
+    'cayenne', 'chili powder', 'chocolate chip', 'cinnamon', 'cocoa', 'cornmeal', 'cornstarch', 'cumin',
+    'curry powder', 'dried oregano', 'flour', 'garam masala', 'garlic powder', 'gelatin', 'ground ginger',
+    'italian seasoning', 'molasses', 'nutmeg', 'onion powder', 'oregano', 'paprika', 'pepper',
+    'pepper flake', 'powdered sugar', 'red pepper flake', 'rosemary', 'sage', 'salt', 'seasoning',
+    'smoked paprika', 'spice', 'sprinkle', 'sugar', 'thyme', 'turmeric', 'vanilla', 'vanilla extract', 'yeast',
+  ] },
+  { id: 'condiments', name: 'Oils, Sauces & Condiments', icon: '🍯', words: [
+    'almond butter', 'balsamic', 'barbecue sauce', 'bbq sauce', 'canola oil', 'chutney', 'coconut oil',
+    'cooking spray', 'curry paste', 'dressing', 'fish sauce', 'gochujang', 'hoisin', 'honey', 'hot sauce',
+    'jam', 'jelly', 'ketchup', 'maple syrup', 'mayo', 'mayonnaise', 'miso', 'mustard', 'nutella', 'oil',
+    'olive oil', 'oyster sauce', 'peanut butter', 'pesto', 'ranch', 'relish', 'rice vinegar',
+    'salad dressing', 'sauce', 'sesame oil', 'soy sauce', 'sriracha', 'syrup', 'tahini', 'tamari',
+    'teriyaki', 'vegetable oil', 'vinegar', 'worcestershire',
+  ] },
+  { id: 'snacks', name: 'Snacks & Nuts', icon: '🥜', words: [
+    'almond', 'cashew', 'chia seed', 'chip', 'chocolate', 'cracker', 'dark chocolate', 'date',
+    'dried cranberry', 'dried fruit', 'flax', 'flaxseed', 'granola bar', 'nut', 'peanut', 'pecan',
+    'pistachio', 'popcorn', 'pretzel', 'pumpkin seed', 'raisin', 'seed', 'sunflower seed',
+    'tortilla chip', 'trail mix', 'walnut',
+  ] },
+  { id: 'drinks', name: 'Drinks', icon: '🥤', words: [
+    'beer', 'coconut water', 'coffee', 'juice', 'kombucha', 'lemonade', 'orange juice', 'soda',
+    'sparkling water', 'tea', 'wine',
+  ] },
+  { id: 'other', name: 'Other', icon: '🛒', words: [] },
+];
+const SECTION_IDS = SECTIONS.map(s => s.id);
+
+// Words that decide the section on their own: "frozen peas" -> Frozen, "canned corn" -> Canned.
+const STRONG_WORDS = { frozen: 'frozen', canned: 'canned', tinned: 'canned', jarred: 'canned' };
+
 // state.recipes:  [{ id, name, servings, ingredients: ["2 cups rice", ...], steps: [{ text, minutes }] }]
 // state.selected: ids of recipes ticked on the Shopping tab
 // state.checked:  shopping-list items already checked off
+// state.aisles:   store sections you picked yourself with "Move", e.g. { "tofu": "dairy" }
 let state = loadState();
 
 function emptyState() {
-  return { recipes: [], selected: [], checked: [] };
+  return { recipes: [], selected: [], checked: [], aisles: {} };
+}
+
+// Keeps only valid "Move" choices (item name -> a known store section id).
+function cleanAisles(obj) {
+  const out = {};
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    for (const [item, sectionId] of Object.entries(obj)) {
+      if (typeof item === 'string' && item.trim() && SECTION_IDS.includes(sectionId)) {
+        out[item.trim().toLowerCase()] = sectionId;
+      }
+    }
+  }
+  return out;
 }
 
 function loadState() {
@@ -28,6 +128,7 @@ function loadState() {
       recipes: Array.isArray(data.recipes) ? data.recipes.map(cleanRecipe).filter(Boolean) : [],
       selected: Array.isArray(data.selected) ? data.selected : [],
       checked: Array.isArray(data.checked) ? data.checked : [],
+      aisles: cleanAisles(data.aisles),
     };
   } catch (err) {
     return emptyState();
@@ -149,6 +250,14 @@ const UNITS = {
   pinch: 'pinch', pinches: 'pinch',
   bunch: 'bunch', bunches: 'bunch',
   package: 'package', packages: 'package', pkg: 'package',
+  block: 'block', blocks: 'block',
+  jar: 'jar', jars: 'jar',
+  bag: 'bag', bags: 'bag',
+  box: 'box', boxes: 'box',
+  bottle: 'bottle', bottles: 'bottle',
+  head: 'head', heads: 'head',
+  stick: 'stick', sticks: 'stick',
+  sprig: 'sprig', sprigs: 'sprig',
 };
 
 const UNICODE_FRACTIONS = { '½': '1/2', '¼': '1/4', '¾': '3/4', '⅓': '1/3', '⅔': '2/3' };
@@ -373,6 +482,7 @@ $('export-btn').addEventListener('click', () => {
     version: 1,
     exportedAt: new Date().toISOString(),
     recipes: state.recipes,
+    aisles: state.aisles, // your "Move" choices on the shopping list
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -394,10 +504,12 @@ $('import-input').addEventListener('change', event => {
   const reader = new FileReader();
   reader.onload = () => {
     let incoming;
+    let incomingAisles = {};
     try {
       const data = JSON.parse(reader.result);
       const list = Array.isArray(data) ? data : data.recipes;
       incoming = Array.isArray(list) ? list.map(cleanRecipe).filter(Boolean) : [];
+      if (!Array.isArray(data)) incomingAisles = cleanAisles(data.aisles);
     } catch (err) {
       incoming = [];
     }
@@ -417,6 +529,7 @@ $('import-input').addEventListener('change', event => {
       else state.recipes.push(recipe);
       if (timer.recipeId === recipe.id) resetTimer(null);
     }
+    Object.assign(state.aisles, incomingAisles);
     saveState();
     renderRecipes();
     showToast('Imported ' + plural(incoming.length, 'recipe'));
@@ -455,12 +568,104 @@ function formatQty(n) {
 }
 
 // Units that get an "s" (or "es") when there's more than one: 3 cups, 2 pinches
-const UNIT_PLURALS = { cup: 'cups', can: 'cans', clove: 'cloves', slice: 'slices', pinch: 'pinches', bunch: 'bunches', package: 'packages' };
+const UNIT_PLURALS = {
+  cup: 'cups', can: 'cans', clove: 'cloves', slice: 'slices', pinch: 'pinches', bunch: 'bunches',
+  package: 'packages', block: 'blocks', jar: 'jars', bag: 'bags', box: 'boxes', bottle: 'bottles',
+  head: 'heads', stick: 'sticks', sprig: 'sprigs',
+};
 
 function shoppingLabel(entry) {
   if (!entry.hasQty) return entry.item;
   const unit = entry.qty > 1 && UNIT_PLURALS[entry.unit] ? UNIT_PLURALS[entry.unit] : entry.unit;
   return [formatQty(entry.qty), unit, entry.item].filter(Boolean).join(' ');
+}
+
+/* ---------- Sorting items into store sections ---------- */
+
+// "Chicken Breast, diced (about 2)" -> "chicken breast"
+function simplifyName(item) {
+  return item
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '') // jalapeño -> jalapeno
+    .split(/[,(]/)[0]                                  // drop ", diced" and "(about 2)"
+    .replace(/[^a-z0-9&\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Turns every word in SECTIONS into a pattern once, when the app starts.
+// The last word may be plural: carrot(s), tomato(es), berr(y|ies).
+const SECTION_PATTERNS = SECTIONS.flatMap(section => section.words.map(phrase => {
+  const ending = phrase.endsWith('y')
+    ? escapeRegExp(phrase.slice(0, -1)) + '(?:y|ies)'
+    : escapeRegExp(phrase) + '(?:s|es)?';
+  return { sectionId: section.id, length: phrase.length, regex: new RegExp('(?:^|\\s)' + ending + '(?=\\s|$)') };
+}));
+
+// Picks a store section automatically.
+// Rule: the matching word that comes LAST in the name wins, because the main word
+// usually comes last ("chicken broth" is broth, "coconut milk" is a can, "peanut butter"
+// is a spread). If two matches end at the same place, the longer one wins.
+function autoSection(item, unit) {
+  const name = simplifyName(item);
+  for (const word of name.split(' ')) {
+    if (STRONG_WORDS[word]) return STRONG_WORDS[word];
+  }
+  if (unit === 'can' || unit === 'jar') return 'canned'; // "2 cans black beans", "1 jar salsa"
+
+  let best = null;
+  for (const pattern of SECTION_PATTERNS) {
+    const match = pattern.regex.exec(name);
+    if (!match) continue;
+    const end = match.index + match[0].length;
+    if (!best || end > best.end || (end === best.end && pattern.length > best.length)) {
+      best = { end, length: pattern.length, sectionId: pattern.sectionId };
+    }
+  }
+  return best ? best.sectionId : 'other';
+}
+
+// The key used to remember a "Move" choice: the item's name, so it applies in every recipe.
+function aisleKey(entry) {
+  return entry.item.trim().toLowerCase();
+}
+
+function sectionFor(entry) {
+  const auto = autoSection(entry.item, entry.unit);
+  const chosen = state.aisles[aisleKey(entry)];
+  return { id: chosen || auto, auto, moved: Boolean(chosen) && chosen !== auto };
+}
+
+function moveItem(entry, value) {
+  const key = aisleKey(entry);
+  const auto = autoSection(entry.item, entry.unit);
+  if (value === 'auto' || value === auto) delete state.aisles[key];
+  else state.aisles[key] = value;
+  saveState();
+  renderShop();
+  const section = SECTIONS.find(s => s.id === (state.aisles[key] || auto));
+  showToast('Moved ' + entry.item + ' to ' + section.name);
+}
+
+// The small "Move" picker next to each item. It uses the phone's own list picker.
+function movePicker(entry, current) {
+  const select = el('select', { class: 'move-select', 'aria-label': 'Move ' + entry.item + ' to another store section' },
+    el('option', { value: '', selected: true, disabled: true }, 'Move ▾'),
+    SECTIONS.map(s =>
+      el('option', { value: s.id }, s.icon + ' ' + s.name + (s.id === current.id ? '  ✓' : ''))),
+    current.moved
+      ? el('option', { value: 'auto' }, '↺ Back to automatic (' + SECTIONS.find(s => s.id === current.auto).name + ')')
+      : null
+  );
+  select.addEventListener('change', () => {
+    if (select.value && select.value !== current.id) moveItem(entry, select.value);
+    else select.value = '';
+  });
+  return select;
 }
 
 function renderShop() {
@@ -490,26 +695,54 @@ function renderShop() {
     list.append(el('li', { class: 'muted' }, 'Tick one or more recipes above to see your list.'));
     return;
   }
+  list.append(el('li', { class: 'shop-hint muted' },
+    'Sorted by store section. Tap “Move” to put an item in a different section; the app remembers it.'));
+
+  // Group items by section, in the order you'd walk through a store.
+  const groups = new Map(SECTIONS.map(s => [s.id, []]));
   for (const entry of items) {
-    const isChecked = state.checked.includes(entry.key);
-    const checkbox = el('input', { type: 'checkbox', checked: isChecked });
-    const li = el('li', { class: isChecked ? 'done' : '' },
+    const section = sectionFor(entry);
+    groups.get(section.id).push({ entry, section });
+  }
+
+  for (const sectionInfo of SECTIONS) {
+    const rows = groups.get(sectionInfo.id);
+    if (rows.length === 0) continue;
+    const itemList = el('ul', { class: 'aisle-items' });
+    for (const { entry, section } of rows) itemList.append(shoppingRow(entry, section));
+    list.append(el('li', { class: 'aisle' },
+      el('h3', { class: 'aisle-title' },
+        el('span', { 'aria-hidden': 'true' }, sectionInfo.icon + ' '),
+        sectionInfo.name,
+        el('span', { class: 'aisle-count' }, ' (' + rows.length + ')')
+      ),
+      itemList
+    ));
+  }
+}
+
+function shoppingRow(entry, section) {
+  const isChecked = state.checked.includes(entry.key);
+  const checkbox = el('input', { type: 'checkbox', checked: isChecked });
+  const li = el('li', { class: isChecked ? 'done' : '' },
+    el('div', { class: 'item-row' },
       el('label', { class: 'check-row' },
         checkbox,
         el('span', {},
           el('span', { class: 'label-text' }, shoppingLabel(entry)),
-          el('span', { class: 'from' }, entry.from.join(', '))
+          el('span', { class: 'from' }, entry.from.join(', ') + (section.moved ? ' · moved by you' : ''))
         )
-      )
-    );
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) state.checked.push(entry.key);
-      else state.checked = state.checked.filter(k => k !== entry.key);
-      li.className = checkbox.checked ? 'done' : '';
-      saveState();
-    });
-    list.append(li);
-  }
+      ),
+      movePicker(entry, section)
+    )
+  );
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) state.checked.push(entry.key);
+    else state.checked = state.checked.filter(k => k !== entry.key);
+    li.classList.toggle('done', checkbox.checked);
+    saveState();
+  });
+  return li;
 }
 
 $('clear-checks-btn').addEventListener('click', () => {

@@ -3,7 +3,7 @@
 A simple, phone-friendly web app for meal prep. You can:
 
 1. **Save recipes:** name, servings, ingredients, and prep steps with times.
-2. **Build a shopping list:** tick the recipes you're prepping, and the app combines their ingredients into one list you can check off.
+2. **Build a shopping list:** tick the recipes you're prepping, and the app combines their ingredients into one list you can check off. The list is **sorted by store section** (Produce, Meat, Dairy, Canned…) in the order you'd walk through a store, and you can tap **Move** to put any item in a different section. The app remembers your choice.
 3. **Time your prep:** a step-by-step countdown that beeps when each step ends (and vibrates on Android; iPhones don't let websites vibrate) and moves on to the next one.
 4. **Back up your recipes:** export them to a file, and import that file on another device or browser.
 5. **Install it like an app:** add it to your phone's home screen. It opens in its own window and works with no internet connection.
@@ -15,11 +15,11 @@ It is plain HTML, CSS and JavaScript. It uses no server, no AI service, no accou
 | File | What it does |
 |---|---|
 | `index.html` | The page and its three tabs |
-| `style.css` | The look: cream "poster" with postage-stamp cards in orange, pink and purple, hand-drawn lettering, phone-first, with automatic dark mode |
-| `app.js` | All the logic: saving, combining ingredients, the timer, export/import |
+| `style.css` | The look, styled like a flower-shop flyer: cream paper, thin sage-green frame lines, dusty-rose headings, pale pink panels and banner strips, and a deep green "awning" tab bar. Phone-first, with an automatic dark mode. |
+| `app.js` | All the logic: saving, combining ingredients, sorting by store section, the timer, export/import |
 | `manifest.webmanifest` | Tells phones the app's name, colors and icon, and to open it in its own window |
 | `sw.js` | The "service worker": saves a copy of the app on the phone so it opens offline |
-| `icons/` | The app icon (a purple postage stamp) in the sizes phones need |
+| `icons/` | The app icon (a sage rounded box with a rose plate) in the sizes phones need |
 | `README.md` | This file |
 
 ## How to type recipes
@@ -40,6 +40,18 @@ Portion into containers
 ```
 A step with no time (like the last one) has no countdown. You tap **Next step** when you're done with it.
 
+## How the store sections work
+
+No AI is involved. `app.js` has a word list for each section (near the top, called `SECTIONS`). For each item, the app looks for those words in the ingredient's name:
+
+- The word that comes **last** wins, because the main word is usually last: "chicken **broth**" goes to Canned, "coconut **milk**" to Canned, "peanut **butter**" to Condiments.
+- The words **frozen** and **canned**, and the units **can** and **jar**, always win: "frozen peas" goes to Frozen, "1 can corn" to Canned.
+- Anything the lists don't know goes to **Other**.
+
+**Move:** tap **Move ▾** next to an item and pick a section. The app remembers that choice for that ingredient in every recipe, and the item shows "moved by you". To undo it, tap **Move ▾** → **Back to automatic**. Your Move choices are included in **Export recipes**, so they come along when you import on another device.
+
+**Teaching the app a new word:** add it, in the singular, to the right list in `SECTIONS` in `app.js`. Plurals are matched automatically.
+
 ## Install it on your phone
 
 This only works once the app is published at an `https://` address, such as GitHub Pages. It does not work from a file opened straight from a folder.
@@ -54,7 +66,7 @@ The **Meal Prep** icon appears on your home screen. It opens full-screen, withou
 ## Privacy and data
 
 - Your recipes are saved **only in this browser on this device**, using the browser's built-in storage (`localStorage`). Nothing is sent anywhere.
-- The app loads two free fonts (Fraunces and Patrick Hand) from Google Fonts. No key is needed. After the first visit, the app keeps its own copy of the fonts for offline use; if they never loaded, it uses built-in fonts and still works. Loading fonts lets Google see your device's IP address, as with any website that uses Google Fonts.
+- The app loads three free fonts (Playball for the name, Fredoka for headings, Montserrat for text) from Google Fonts. No key is needed. After the first visit, the app keeps its own copy of the fonts for offline use; if they never loaded, it uses built-in fonts and still works. Loading fonts lets Google see your device's IP address, as with any website that uses Google Fonts.
 - Clearing your browser data, or using a private window, erases them. Use **Export recipes** to keep a backup file.
 - Recipes don't sync between devices automatically. To move them, export on one device and import on the other.
 
@@ -62,6 +74,7 @@ The **Meal Prep** icon appears on your home screen. It opens full-screen, withou
 
 - No unit conversion. `1 cup rice` and `4 tbsp rice` stay as separate lines on the shopping list.
 - Items are combined only when the name matches exactly (ignoring capital letters). `1 egg` and `2 eggs` stay separate.
+- Store sections are a typical layout, not your store's map. Uncommon ingredients land in **Other** until you move them.
 - Some phones pause web pages while the screen is locked. The timer shows the correct time again when you return, but the beep may not sound while the phone is locked. The app asks the phone to keep the screen on while a timer runs.
 
 ## How to test it
@@ -74,6 +87,8 @@ Open `index.html` in a web browser (double-click it). On a computer, use your br
 - [ ] **Edit / Delete:** Edit a recipe and confirm the change shows. Delete it and confirm it asks first.
 - [ ] **Shopping list combines amounts:** Add two recipes that both use `cups rice` (e.g. `2 cups rice` and `1 cup rice`). Tick both on the Shopping tab. The list shows **3 cups rice**.
 - [ ] **Check off items:** Tick an item and it gets crossed out. **Uncheck all** clears the ticks.
+- [ ] **Store sections:** With the example recipe ticked, the list shows headings in this order: Produce (broccoli, garlic), Meat & Seafood (chicken), Grains & Pasta (rice), Baking & Spices (salt), Oils, Sauces & Condiments (soy sauce, olive oil).
+- [ ] **Move:** Tap **Move ▾** next to an item and choose another section. It jumps there and says "moved by you". Refresh the page and it stays. **Move ▾ → Back to automatic** puts it back.
 - [ ] **Timer:** On the Timer tab, choose a recipe and tap **Start**. The clock counts down. **Pause** and **Resume** work. **Skip** moves to the next step. Tip: make a test recipe with a step like `Test - 0.1 min` (6 seconds) to see it beep and move on by itself.
 - [ ] **Untimed step:** A step with no time shows "No timer for this step" and a **Next step** button.
 - [ ] **Finish:** After the last step it shows **All steps done!** **Start over** goes back to step 1.

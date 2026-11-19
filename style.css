@@ -1,50 +1,58 @@
 /* Meal Prep Helper — styles
-   Look: a cream "poster" with cards drawn as postage stamps
-   (perforated edges) in orange, pink and purple, with hand-drawn lettering.
+   Look: a flower-shop flyer. Cream paper, thin sage-green frame lines,
+   dusty-rose headings, pale pink panels and a deep green "awning" tab bar.
+   Fonts: a script for the app name, a rounded bold font for headings,
+   and spaced-out capitals for small labels.
    Phone-first: everything is designed for a narrow screen, then centered on wider ones. */
 
 /* ---------- Colors & fonts ---------- */
 :root {
-  /* paper */
-  --bg: #fdf1e3;          /* cream page */
-  --paper: #fff8ee;       /* inside of each stamp */
-  --peach: #f6d6bd;       /* soft frame around the page */
-  --text: #4a2a52;        /* dark plum for easy reading */
-  --muted: #7d6577;
+  --bg: #f4f1ea;           /* cream page */
+  --paper: #faf8f3;        /* inside of cards */
+  --text: #44524d;         /* dark green-gray for easy reading */
+  --muted: #505f59;        /* dark enough to read on the pink panels too */
 
-  /* stamp colors (frames) */
-  --orange: #f37b4f;
-  --pink: #f29aa9;
-  --purple: #8a3a9c;
+  --sage: #7a9e93;         /* button outlines */
+  --sage-button: #527b6e;  /* filled buttons: a deeper sage so white text is readable */
+  --sage-line: #8fb0a3;    /* frame lines and card borders */
+  --sage-soft: #cddbd5;    /* faint dividers */
+  --sage-shadow: #c2d5cd;  /* solid offset "shadow" blocks, like the date box on the flyer */
+  --sage-ink: #4b7567;     /* sage-colored text */
+  --green: #2f6b55;        /* the shop awning: tab bar */
+  --on-green: #f4f1ea;
 
-  /* darker versions of the same colors, used for text so it stays readable */
-  --orange-ink: #c4501f;
-  --pink-ink: #b8475f;
-  --purple-ink: #7a2f8e;
+  --rose: #b07a83;         /* big headings */
+  --rose-ink: #874e5a;     /* smaller rose text, darker so it stays readable */
+  --pink: #f3d3d7;         /* pale pink panels and banner strips */
+  --pink-line: #e3b3ba;
 
-  --on-accent: #fff8ee;   /* text on purple buttons */
   --danger: #b3261e;
 
-  --font-hand: "Patrick Hand", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif;
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-script: "Playball", "Brush Script MT", cursive;
+  --font-head: "Fredoka", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  --tabbar-height: 68px;
+  --tabbar-height: 66px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #24142a;
-    --paper: #33203a;
-    --peach: #4a3050;
-    --text: #fbeee2;
-    --muted: #cdb7c6;
-    --orange: #f58a60;
-    --pink: #f3a5b2;
-    --purple: #b46ac6;
-    --orange-ink: #ffa17c;
-    --pink-ink: #f7b3bf;
-    --purple-ink: #d9a3e6;
-    --on-accent: #24142a;
+    --bg: #17221e;
+    --paper: #1e2c27;
+    --text: #e9eee9;
+    --muted: #a7b7b0;
+    --sage: #8fbcae;
+    --sage-button: #8fbcae;
+    --sage-line: #5f877a;
+    --sage-soft: #33483f;
+    --sage-shadow: #2b3f37;
+    --sage-ink: #a9d0c3;
+    --green: #234a3d;
+    --on-green: #f4f1ea;
+    --rose: #e2a9b2;
+    --rose-ink: #edbcc4;
+    --pink: #3b2a2f;
+    --pink-line: #5c4148;
     --danger: #ff8a80;
   }
 }
@@ -57,146 +65,164 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-hand);
-  font-size: 19px; /* handwriting fonts read small, so the base size is a bit larger */
-  line-height: 1.4;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
   /* leave room so the fixed tab bar never covers content */
   padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 16px);
 }
 
-/* ---------- Header: big soft-serif title with an underline, like "Five" ---------- */
+/* ---------- Header: script name over spaced capitals, like "Borcelle / FLOWER SHOP" ---------- */
 .app-header {
-  padding: calc(18px + env(safe-area-inset-top)) 16px 6px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px 4px;
   text-align: center;
 }
-.app-header h1 {
-  display: inline-block;
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2rem;
-  line-height: 1.1;
-  color: var(--purple-ink);
-  border-bottom: 4px solid var(--purple);
-  padding-bottom: 2px;
+.app-header h1 { margin: 0; font-weight: 400; line-height: 1; }
+.brand-script {
+  display: block;
+  font-family: var(--font-script);
+  font-size: 2.6rem;
+  color: var(--rose);
 }
+.brand-caps {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--sage-ink);
+}
+.brand-caps::before, .brand-caps::after { content: "✦"; color: var(--pink-line); letter-spacing: 0; margin: 0 10px; }
 
-/* The page sits inside a soft peach frame, like the poster */
+/* The page sits inside a thin double sage frame, like the flyer */
 main {
   max-width: 640px;
-  margin: 12px auto 0;
+  margin: 14px auto 0;
   padding: 16px 12px;
-  border: 5px solid var(--peach);
-  border-radius: 6px;
+  border: 1.5px solid var(--sage-line);
+  outline: 1.5px solid var(--sage-line);
+  outline-offset: 4px;
 }
 @media (max-width: 400px) {
-  main { margin-inline: 8px; padding-inline: 10px; }
+  main { margin-inline: 10px; padding-inline: 10px; }
 }
 
 h2 {
-  font-family: var(--font-display);
-  font-weight: 800;
+  font-family: var(--font-head);
+  font-weight: 600;
   font-size: 1.3rem;
   line-height: 1.2;
   margin: 0 0 8px;
   color: var(--ink);
 }
 
-/* ---------- Stamp cards ----------
-   Each card is drawn with three background layers, top to bottom:
-   1. a cream "paper" rectangle in the middle,
-   2. a solid colored frame, a little smaller than the card, and
-   3. a colored pattern with see-through circles; only the circles along the
-      outer edge peek out, which makes the perforated, postage-stamp edge.
-   Change --frame / --ink to recolor a card. */
-.card {
-  --frame: var(--orange);
-  --ink: var(--orange-ink);
-  --hole: 5px;          /* radius of the perforation holes */
-  --frame-width: 18px;  /* thickness of the colored frame */
-
-  padding: calc(var(--frame-width) + 14px);
-  margin-bottom: 20px;
-  background:
-    linear-gradient(var(--paper) 0 0) no-repeat 50% 50% /
-      calc(100% - 2 * var(--frame-width)) calc(100% - 2 * var(--frame-width)),
-    linear-gradient(var(--frame) 0 0) no-repeat 50% 50% /
-      calc(100% - 3 * var(--hole)) calc(100% - 3 * var(--hole)),
-    radial-gradient(var(--hole), #0000 97%, var(--frame)) round
-      calc(-1.5 * var(--hole)) calc(-1.5 * var(--hole)) /
-      calc(3 * var(--hole)) calc(3 * var(--hole));
-  filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.06));
+/* Small spaced-out capitals, like "FLOWER SHOP" */
+.caps, .band, .aisle-title, .tab-btn, .clock-label {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 600;
 }
 
-/* color choices */
-.stamp-orange { --frame: var(--orange); --ink: var(--orange-ink); }
-.stamp-pink   { --frame: var(--pink);   --ink: var(--pink-ink); }
-.stamp-purple { --frame: var(--purple); --ink: var(--purple-ink); }
+/* Pink banner strip, like "GRAND OPENING" */
+.band {
+  margin: 0 0 14px;
+  padding: 7px 10px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--rose-ink);
+  background: var(--pink);
+  border-top: 1.5px solid var(--sage-line);
+  border-bottom: 1.5px solid var(--sage-line);
+}
 
-/* saved recipes take turns: orange, pink, purple, orange, ... */
-#recipe-list .card:nth-child(3n+1) { --frame: var(--orange); --ink: var(--orange-ink); }
-#recipe-list .card:nth-child(3n+2) { --frame: var(--pink);   --ink: var(--pink-ink); }
-#recipe-list .card:nth-child(3n)   { --frame: var(--purple); --ink: var(--purple-ink); }
+/* ---------- Cards ----------
+   Two kinds: sage-outlined cream cards (the default), and pale pink panels
+   like the flyer's services list. The class names come from the earlier design. */
+.card {
+  --ink: var(--rose);
+  background: var(--paper);
+  border: 1.5px solid var(--sage-line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.stamp-pink, .stamp-orange {
+  --ink: var(--rose-ink);
+  background: var(--pink);
+  border-color: var(--pink-line);
+}
+.stamp-purple { --ink: var(--rose); }
 
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .card-head h2 { margin: 0; }
 
-.toolbar { margin-bottom: 16px; text-align: center; }
+.toolbar { margin: 4px 0 18px; text-align: center; }
 
 .muted { color: var(--muted); }
-.hint { color: var(--muted); font-size: 0.9rem; margin: 0 0 6px; }
-.error { color: var(--danger); font-weight: 700; min-height: 1em; margin: 8px 0; }
+.hint { color: var(--muted); font-size: 0.85rem; margin: 0 0 6px; }
+.error { color: var(--danger); font-weight: 600; min-height: 1em; margin: 8px 0; }
 .error:empty { display: none; }
 .empty { color: var(--muted); text-align: center; }
 p.empty { padding: 24px 8px; }
 .empty:empty { display: none; }
 code {
-  font-family: var(--font-hand);
-  background: var(--bg);
-  border: 1px dashed var(--pink);
-  padding: 0 6px;
+  font-family: var(--font-body);
+  font-size: 0.85em;
+  color: var(--rose-ink);
+  background: var(--pink);
+  padding: 1px 6px;
   border-radius: 6px;
 }
 
 /* ---------- Form fields ---------- */
-label { display: block; font-weight: 700; color: var(--ink, var(--text)); margin: 12px 0 4px; }
+label { display: block; font-weight: 600; font-size: 0.95rem; color: var(--ink, var(--text)); margin: 12px 0 4px; }
 input[type="text"], input[type="number"], textarea, select {
   width: 100%;
-  font-family: var(--font-hand);
-  font-size: 19px; /* 16px or more stops iPhone from zooming in on focus */
+  font-family: var(--font-body);
+  font-size: 16px; /* 16px or more stops iPhone from zooming in on focus */
   color: var(--text);
-  background: var(--bg);
-  border: 2px solid var(--pink);
+  background: var(--paper);
+  border: 1.5px solid var(--sage-line);
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 9px 12px;
 }
-textarea { resize: vertical; line-height: 1.35; }
+textarea { resize: vertical; }
 input:focus, textarea:focus, select:focus, button:focus-visible {
-  outline: 3px solid var(--purple);
+  outline: 3px solid var(--rose);
   outline-offset: 2px;
 }
 
-/* ---------- Buttons: solid purple "label" boxes, like the "– Avery" tag ---------- */
+/* ---------- Buttons: rounded sage boxes with a solid offset block behind them ---------- */
 .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 .row.center { justify-content: center; }
 
 .btn {
-  font-family: var(--font-hand);
+  font-family: var(--font-head);
+  font-weight: 500;
   font-size: 1.05rem;
   min-height: 44px; /* comfortable tap target */
   padding: 8px 18px;
-  border-radius: 4px;
-  border: 2px solid var(--purple);
+  border-radius: 12px;
+  border: 1.5px solid var(--sage);
   background: var(--paper);
-  color: var(--purple-ink);
+  color: var(--sage-ink);
   cursor: pointer;
 }
-.btn:active { transform: translateY(1px); }
+.btn:active { transform: translate(2px, 2px); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn.primary { background: var(--purple); color: var(--on-accent); }
+.btn.primary {
+  background: var(--sage-button);
+  border-color: var(--sage-button);
+  color: #fff;
+  box-shadow: 4px 4px 0 var(--sage-shadow);
+}
+@media (prefers-color-scheme: dark) { .btn.primary { color: #12201b; } }
+.btn.primary:active { box-shadow: 2px 2px 0 var(--sage-shadow); }
 .btn.danger { border-color: var(--danger); color: var(--danger); }
 .btn.small { min-height: 36px; padding: 4px 12px; font-size: 0.95rem; }
-.btn.big { min-width: 130px; font-size: 1.25rem; }
+.btn.big { min-width: 130px; font-size: 1.2rem; }
 
 /* ---------- Recipe cards ---------- */
 .recipe summary {
@@ -213,23 +239,30 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
   top: 50%;
   margin-top: -0.7em;
   font-size: 1.2rem;
-  color: var(--ink);
+  color: var(--sage);
   transition: transform 0.15s;
 }
 .recipe[open] summary::after { transform: rotate(90deg); }
 .recipe .name {
   display: block;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.3rem;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.25rem;
   line-height: 1.2;
-  color: var(--ink);
+  color: var(--rose);
 }
-.recipe .meta { color: var(--muted); font-size: 0.95rem; display: block; }
-.recipe .body { margin-top: 12px; padding-top: 4px; border-top: 2px dashed var(--frame); }
-.recipe h3 { font-size: 1.05rem; margin: 12px 0 4px; color: var(--ink); }
-.recipe ul, .recipe ol { margin: 0; padding-left: 24px; }
+.recipe .meta { color: var(--muted); font-size: 0.85rem; display: block; margin-top: 2px; }
+.recipe .body { margin-top: 12px; padding-top: 4px; border-top: 1.5px dashed var(--sage-soft); }
+.recipe h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin: 14px 0 4px;
+  color: var(--sage-ink);
+}
+.recipe ul, .recipe ol { margin: 0; padding-left: 22px; }
 .recipe li { margin: 2px 0; }
+.recipe li::marker { color: var(--rose); }
 
 /* ---------- Checklists (shopping) ---------- */
 .checklist { list-style: none; margin: 0; padding: 0; }
@@ -238,91 +271,155 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
   align-items: flex-start;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 2px dotted var(--peach);
+  border-bottom: 1.5px dotted var(--sage-soft);
   font-weight: 400;
+  font-size: 1rem;
   color: var(--text);
   margin: 0;
   cursor: pointer;
 }
+.stamp-orange .check-row, .stamp-orange .item-row { border-bottom-color: var(--pink-line); }
 .checklist li:last-child .check-row, #shop-recipes .check-row:last-child { border-bottom: none; }
-.check-row input { width: 22px; height: 22px; margin: 3px 0 0; accent-color: var(--purple); flex-shrink: 0; }
-.check-row .from { display: block; color: var(--muted); font-size: 0.85rem; }
+.check-row input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--sage); flex-shrink: 0; }
+.check-row .from { display: block; color: var(--muted); font-size: 0.78rem; }
 .checklist .done .label-text { text-decoration: line-through; color: var(--muted); }
 
-/* ---------- Timer: the clock sits in a scalloped oval, like rule #3 ---------- */
+/* Shopping list grouped by store section, styled like the flyer's bulleted services list */
+.shop-hint { font-size: 0.85rem; margin-bottom: 4px; }
+.aisle { margin-top: 16px; }
+.aisle-title {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--rose-ink);
+  margin: 0 0 2px;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid var(--pink-line);
+}
+.aisle-count { font-weight: 400; color: var(--muted); letter-spacing: 0.05em; }
+.aisle-items { list-style: none; margin: 0; padding: 0; }
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1.5px dotted var(--sage-soft);
+}
+.aisle-items > li:last-child > .item-row { border-bottom: none; }
+.item-row .check-row { flex: 1; border-bottom: none; min-width: 0; }
+
+/* The "Move" picker: a small sage pill that opens the phone's own list */
+.move-select {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 5.4em; /* fixed, otherwise it grows to fit its longest option */
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 16px; /* 16px or more stops iPhone from zooming in */
+  font-weight: 600;
+  color: var(--sage-ink);
+  background: var(--paper);
+  border: 1.5px solid var(--sage-line);
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+/* ---------- Timer: the clock sits in a rounded box with a solid offset block, like "20 Sept" ---------- */
 .timer { text-align: center; }
-.timer h2 { font-size: 1.5rem; margin: 4px 0; }
+.timer h2 { font-size: 1.45rem; margin: 4px 0; color: var(--sage-ink); }
+#timer-progress { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.75rem; font-weight: 600; }
 .clock {
   display: inline-block;
-  min-width: 78%;
-  margin: 22px auto 14px;
-  padding: 18px 28px;
-  border-radius: 50%;
-  border: 6px solid var(--orange);
-  outline: 10px dotted var(--orange); /* the dots stick out past the border, making scallops */
-  outline-offset: -2px;
+  min-width: 70%;
+  margin: 18px auto 16px;
+  padding: 14px 24px;
+  border: 2px solid var(--sage);
+  border-radius: 24px;
   background: var(--paper);
-  color: var(--orange-ink);
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 15vw, 4.75rem);
-  font-weight: 900;
+  box-shadow: 9px 9px 0 var(--sage-shadow);
+  color: var(--rose);
+  font-family: var(--font-head);
+  font-size: clamp(3rem, 15vw, 4.5rem);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
 }
 .clock.untimed {
-  font-family: var(--font-hand);
-  font-size: 1.4rem;
-  font-weight: 400;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--muted);
-  padding: 22px 28px;
+  padding: 20px 24px;
 }
-.total { font-weight: 700; color: var(--ink); margin: 16px 0 4px; }
+/* "Total time left" becomes a pink banner strip */
+.total {
+  margin: 18px -16px 6px;
+  padding: 7px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--rose-ink);
+  background: var(--pink);
+  border-top: 1.5px solid var(--sage-line);
+  border-bottom: 1.5px solid var(--sage-line);
+}
+.total:empty { display: none; }
 
-/* ---------- Bottom tab bar ---------- */
+/* ---------- Bottom tab bar: the deep green shop awning ---------- */
 .tab-bar {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   display: flex;
-  background: var(--bg);
-  border-top: 4px solid var(--purple);
+  background: var(--green);
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 10;
+}
+/* striped awning edge along the top */
+.tab-bar::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: -8px;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--bg) 0 14px, var(--sage-soft) 14px 28px);
+  border-top: 1.5px solid var(--sage-line);
+  border-bottom: 1.5px solid var(--green);
 }
 .tab-btn {
   flex: 1;
   height: var(--tabbar-height);
   border: none;
   background: none;
-  font-family: var(--font-hand);
-  font-size: 1rem;
-  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: #cfe0d9;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   cursor: pointer;
 }
-.tab-icon { font-size: 1.35rem; line-height: 1; }
-.tab-btn[aria-selected="true"] { color: var(--orange-ink); font-weight: 700; }
+.tab-icon { font-size: 1.3rem; line-height: 1; letter-spacing: 0; }
+.tab-btn[aria-selected="true"] { color: #f6d9dd; }
 .tab-btn[aria-selected="true"] .tab-icon {
-  background: var(--paper);
-  border: 2px dashed var(--orange);
-  border-radius: 50%;
-  padding: 3px 6px;
+  background: #f3d3d7;
+  border-radius: 999px;
+  padding: 3px 10px;
 }
 
 /* ---------- Toast message ---------- */
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 12px);
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 18px);
   transform: translateX(-50%);
-  background: var(--purple);
-  color: var(--on-accent);
+  background: var(--green);
+  color: var(--on-green);
   padding: 8px 18px;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
   max-width: calc(100% - 32px);
   opacity: 0;
   pointer-events: none;
