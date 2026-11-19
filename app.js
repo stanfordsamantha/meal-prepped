@@ -302,7 +302,7 @@ function renderRecipes() {
     list.append(
       el('div', { class: 'card empty' },
         el('p', {}, 'No recipes yet. Tap “+ New recipe” to add one.'),
-        el('button', { type: 'button', class: 'btn', onclick: addSampleRecipe }, 'Add a recipe')
+        el('button', { type: 'button', class: 'btn', onclick: addSampleRecipe }, 'Add an example recipe')
       )
     );
     return;
@@ -361,7 +361,7 @@ function addSampleRecipe() {
   }));
   saveState();
   renderRecipes();
-  showToast('Sample recipe added');
+  showToast('Example recipe added');
 }
 
 /* ---------- Export / Import ---------- */
@@ -780,6 +780,5 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     navigator.serviceWorker.register('./sw.js').catch(() => {
       /* offline mode is a bonus; the app still works without it */
     });
-  }
   });
 }
